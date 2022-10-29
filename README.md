@@ -9,7 +9,7 @@
 |    3    |    4    |    5    |    6    |    7    |    8    |    9    |
 |    10   |    11   |    12   |    13   |    14   |    15   |    16   |
 |    17   |    18   |    19   |    20   |    21   |    22   |    23   |
-|    24   |    25   |    26   | 27([D0])| 28([D1])|    29   |    30   |
+|    24   |    25   |    26   | 27([D0])| 28([D1])| 29([D2])|    30   |
 |    31   |         |         |         |         |         |         |
 
 十一月
@@ -91,6 +91,18 @@ let b = a + 1;//error
 - `from_str.rs`中`map_err`为什么可以传入`ParsePersonError::ParseInt`?
 - `try_from_into.rs`中的`type Error = IntoColorError;`?,以及`tuple`不可以迭代
 - `advanced_errs1.rs`,假如一个错误类型Erra实现了`From<Errb>`trait,那么在一个返回类型为Result<T,Erra>的函数中，就可以直接使用`?`来抛出返回错误类型`Errb`，这个时候错误类型`Errb`会转换为`Erra`
+## Day2 2022-10-29
+### 进度 
+- 效率好低┭┮﹏┭┮，就看了一点r5
+- 在WSL2上配置了一下lab0
+### Day3 计划
+- 看完浙大的r5课
+- 看完r5手册
+- 做下rcore的lab0
+### [关于升级配置`rustc nightly`](https://www.cnblogs.com/skzxc/p/13179732.html)
+### r5 参考
+- 主要参考`61c`(浙大网课ppt就是61c的)，以及`RISC-V 手册 一本开源指令集的指南`
 ---
 [D0]: #day0-2022-10-27
 [D1]: #day1-2022-10-28
+[D2]: #day2-2022-10-29
