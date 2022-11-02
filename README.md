@@ -15,7 +15,7 @@
 十一月
 |   MON   |   TUE   |   WED   |   THU   |   FRI   |   SAT   |   SUN   |
 |---------|---------|---------|---------|---------|---------|---------|
-|         | 1([D5]) |    2    |    3    |    4    |    5    |    6    |
+|         | 1([D5]) | 2([D6]) |    3    |    4    |    5    |    6    |
 |    7    |    8    |    9    |    10   |    11   |    12   |    13   |
 |    14   |    15   |    16   |    17   |    18   |    19   |    20   |
 |    21   |    22   |    23   |    24   |    25   |    26   |    27   |
@@ -31,6 +31,8 @@
 |    26   |    27   |    28   |    29   |    30   |         |         |
 
 ---
+## TODO
+- 学习rust宏
 
 ---
 
@@ -136,8 +138,55 @@ let b = a + 1;//error
     - [169.多数元素.md](./leetcode/169.%E5%A4%9A%E6%95%B0%E5%85%83%E7%B4%A0.md)
     - [234.回文链表.md](./leetcode/234.%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8.md)
 - 看完了r5手册，还是边写rcore边看吧
-### Day6计划
+### Day6 计划
 - 做完lab0和lab1
+## Day6 2022-11-2
+### 进度
+- comp的文档被阉割了，去看了rcore原本的文档，能学习到更多
+- 做完了lab0-0
+### Day7 计划
+- 做完lab0-1和lab1，看看rust的书，写写rust代码
+### 语义项
+- `Language items are special functions and types that are required internally by the compiler`,比如rcore中的`panic_handler`(大致功能是打印出错位置和原因并杀死当前应用)与`start`(代表了标准库std在执行应用程序之前需要进行一些初始化的工作)语义项
+### RustSBI到底是啥
+- `SBI`是RISC-V Supervisor Binary Interface规范的缩写，OpenSBI是RISC-V官方用C语言开发的SBI参考实现，RustSBI是用rust语言实现的SBI
+- RISC-V架构中，存在着定义于操作系统之下的运行环境，这个运行环境不仅将引导启动RISC-V下的操作系统，还将常驻于后台，为操作系统提供一系列二进制接口，以便以获取和操作硬件信息
+- 操作系统内核于RustSBI的关系有点像应用与操作系统内核的关系，后者像前者提供一定的服务，只是SBI的服务很少，比如关机，显示字符串等。
+- 还是个[runtime](http://rcore-os.cn/rCore-Tutorial-Book-v3/appendix-c/index.html)
+### lab0-0(LibOS)
+#### 移除标准库依赖
+- 由于rcore是个内核，所以我们不能使用`std`,只能使用`core`
+- 实现`LibOS`,需要首先实现`print`函数，好在裸金属上调试，
+- `移除println!宏`,通过配置`.cargo`目录下创建config文件，完成`交叉编译`
+- 编译器需要提供`panic_handler`语义项，`#[panic_handler]`指向的函数与core中的`panic!`合并在一起
+- `start`语义项，语言标准库和三方库作为应用程序的执行环境，需要负责在执行应用程序之前进行一些初始化工作，这里没有了std，所以没有了`std`
+### qemu模拟器
+- qemu模拟了一个CPU，一条物理物理内存和若干I/O外设
+- 内核镜像的第一条指令位于`0x80200000`，rustsbi位于`[0x80000000,0x80200000]`,通过`链接脚本`来调整内核可执行文件的布局
+### riscv64-unknown-elf-gdb的安装
+- 下载调试器到一个临时路径
+- 解压缩
+- 将调试器复制到`/usr/local/bin`目录下
+- 确保文件权限正确
+```
+cd /tmp
+wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
+tar -zxf riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
+cd riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14/bin
+sudo cp ./* /usr/local/bin/
+cd /usr/local/bin/
+sudo chmod 777 ./*
+```
+### 设置内核栈
+- 使能`函数调用`，也就是说
+- 在控制流转移前后保持不变的寄存器集合称为`函数调用上下文`
+- 调用行为需要有一段`开场(Prologue)`与`结尾(Epilogue)`开保存与恢复寄存器
+- `调用规范`约定在某个指令集架构上，`某种语言`的函数调用如何实现，它包括以下内容
+    - 函数的输入参数和返回值如何传递
+    - 函数调用上下文中Caller/Callee寄存器的划分
+    - 其他的在函数调用流程中对于寄存器的使用方法
+- 调用规范是对于一种确定的编程语言来说到的，因为一般意义上函数调用只会在编程语言内部进行，当一种语言想要调用另一门编程语言编写的函数接口时，编译器就需要同时清楚两门语言的调用规范，并对寄存器使用做出调整
+- 通过`sp(x2)`加上一个偏移量来访问当前函数的`栈帧`内容
 ---
 [D0]: #day0-2022-10-27
 [D1]: #day1-2022-10-28
@@ -145,3 +194,4 @@ let b = a + 1;//error
 [D3]: #day3-2022-10-30
 [D4]: #day4-2022-10-31
 [D5]: #day5-2022-11-1
+[D6]: #day5-2022-11-2

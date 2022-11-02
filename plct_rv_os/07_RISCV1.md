@@ -1,0 +1,13 @@
+## 汇编语言
+- 难以移植，由于不同架构的差距大，比如寄存器数量不同，位宽不同等，使得汇编语言书写的程序，无法直接移植
+- `.S`的汇编中包含一些预处理语句，比如include，`.s`中包含存粹的汇编指令
+- 一个完整的RISC-V汇编程序由多条`语句(statement)`组成
+- 一个RISC-V汇编主要是三部分组成
+    - `[label:] [operation] [comment]`
+    - label是标号,如果要引用到某条指令的地址，可以使用，
+    - operation
+        - instruction
+        - pseudo-instruction(伪指令)，可以用一条伪指令指示汇编器产生多条实际的指令
+        - directive，通过类指令的形式(以"."开头)，通知汇编器如何控制代码的产生，不对应具体的指令，有点像`#include<>`
+        - macro，采用.macro/.endm自定义宏
+    - comment, `#`
